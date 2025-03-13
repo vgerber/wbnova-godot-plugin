@@ -1,0 +1,107 @@
+extends Node3D
+
+
+@onready var player: Player = $Player
+@onready var robot: Node3D = $ur5e
+var joint_nodes: Array[Node3D] = []
+var joint_base_rotations: Array[float] = []
+
+const DH_PARAMS = [
+	{
+	  "alpha": 1.5707963267948966,
+	  "theta": 0,
+	  "a": 0,
+	  "d": 162.25,
+	  "reverse_rotation_direction": false
+	},
+	{
+	  "alpha": 0,
+	  "theta": 0,
+	  "a": -425,
+	  "d": 0,
+	  "reverse_rotation_direction": false
+	},
+	{
+	  "alpha": 0,
+	  "theta": 0,
+	  "a": -392.2,
+	  "d": 0,
+	  "reverse_rotation_direction": false
+	},
+	{
+	  "alpha": 1.5707963267948966,
+	  "theta": 0,
+	  "a": 0,
+	  "d": 133.3,
+	  "reverse_rotation_direction": false
+	},
+	{
+	  "alpha": -1.5707963267948966,
+	  "theta": 0,
+	  "a": 0,
+	  "d": 99.7,
+	  "reverse_rotation_direction": false
+	},
+	{
+	  "alpha": 0,
+	  "theta": 0,
+	  "a": 0,
+	  "d": 99.6,
+	  "reverse_rotation_direction": false
+	}
+  ]
+
+func traverse_joints(root_node: Node3D) -> Array[Node3D]:
+	for child in root_node.get_children():
+		if child.name.split("_")[-1].begins_with("J"):
+			var joint_nodes = traverse_joints(child)
+			joint_nodes.push_front(child)
+			return joint_nodes
+	return []
+
+func apply_joint_values(joint_values: Array[float]):
+	var transform = Transform3D()
+	
+	for joint_index in range(len(joint_nodes)):
+		var joint = joint_nodes[joint_index]
+		var dh_param = DH_PARAMS[joint_index]
+		var rotation_offset: float = dh_param["theta"]
+		var rotation_sign: int = -1 if dh_param["reverse_rotation_direction"] else 1
+		#var joint_transform = Transform3D()
+		#joint_transform = joint_transform.rotated(Vector3(0, 1, 0), rotation_sign * joint_values[joint_index] + rotation_offset)
+		#joint_transform = joint_transform.translated(Vector3(0, dh_param["d"] / 1000, 0))
+		#joint_transform = joint_transform.translated(Vector3(dh_param["a"] / 1000, 0, 0))
+		#joint_transform = joint_transform.rotated(Vector3(1, 0, 0), dh_param["alpha"])
+		
+		joint.rotate_y(rotation_sign * joint_values[joint_index] + rotation_offset)
+	
+func _ready() -> void:
+	joint_nodes = traverse_joints(robot)
+	
+	var joint_values: Array[float] = [
+		0.17048650979995728,
+		-1.6268125772476196,
+		1.9697548151016235,
+		-0.021638255566358566,
+		1.2142219543457031,
+		0.17783001065254211
+	  ]
+	
+	for node in joint_nodes:
+		joint_base_rotations.push_back(node.rotation.y)
+var time = 0
+
+func _process(delta: float) -> void:
+	time += delta
+	var joint_values: Array[float] = [
+		sin(time * 0.01) * PI * 2,
+		sin(time * 0.01),
+		0,
+		-1.5709999799728394,
+		1.5709999799728394,
+		-1.5709999799728394
+	  ]
+	apply_joint_values(joint_values)
+
+func _on_player_speed_increased() -> void:
+	pass # Replace with function body.
