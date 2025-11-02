@@ -1,1 +1,0 @@
-pub type Manufacturer = String;

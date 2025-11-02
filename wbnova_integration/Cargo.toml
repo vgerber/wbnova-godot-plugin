@@ -1,0 +1,14 @@
+[package]
+name = "wbnova_integration"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+godot = "0.2.4"
+godot_tokio = "0.3.0"
+wbnova-api = { git = "https://github.com/vgerber/wbnova-api.git", branch = "main" }
+reqwest = "0.12.14"
+tokio = "1.44.1"
+
+[lib]
+crate-type = ["cdylib"] 

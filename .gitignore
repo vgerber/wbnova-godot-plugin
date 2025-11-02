@@ -1,1 +1,4 @@
 target/
+*.zip
+*.so
+*.dll

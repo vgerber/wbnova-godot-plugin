@@ -1,4 +1,4 @@
 ["workspace"]
 resolver="2"
-members=["nova_api", "godot_plugin"]
+members=["wbnova_integration"]
 

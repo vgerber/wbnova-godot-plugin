@@ -1,1 +1,0 @@
-pub type ProgramRunState = String;

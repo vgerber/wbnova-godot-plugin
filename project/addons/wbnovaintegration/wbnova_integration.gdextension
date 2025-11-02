@@ -1,0 +1,12 @@
+[configuration]
+entry_symbol = "gdext_rust_init"
+compatibility_minimum = 4.4
+reloadable = true
+
+[libraries]
+linux.debug.x86_64 =     "res://addons/wbnovaintegration/libwbnova_integration_debug.so"
+linux.release.x86_64 =   "res://addons/wbnovaintegration/libwbnova_integration.so"
+windows.debug.x86_64 =   "res://addons/wbnovaintegration/wbnova_integration_debug.dll"
+windows.release.x86_64 = "res://addons/wbnovaintegration/wbnova_integration.dll"
+macos.debug =            "res://addons/wbnovaintegration/libwbnova_integration_debug.dylib"
+macos.release =          "res://addons/wbnovaintegration/libwbnova_integration.dylib"
